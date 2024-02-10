@@ -104,3 +104,41 @@ let result = add(five, ten);
 		}
 	}
 }
+
+func TestNextTokenForArithmeticAndBooleanTokens(t *testing.T) {
+	input := `
+!-/*5;
+5 < 10 > 5;
+`
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.NOT, "!"},
+		{token.MINUS, "-"},
+		{token.DIVIDE, "/"},
+		{token.MULTIPLY, "*"},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+		{token.INT, "5"},
+		{token.LESSTHAN, "<"},
+		{token.INT, "10"},
+		{token.GREATERTHAN, ">"},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+	}
+
+	l := New(input) //create a copy of the input string
+
+	for i, tt := range tests {
+		tok := l.NextToken()
+
+		if tok.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, tt.expectedType, tok.Type)
+		}
+		if tok.Literal != tt.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", i, tt.expectedLiteral, tok.Literal)
+		}
+	}
+}

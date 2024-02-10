@@ -16,8 +16,14 @@ const (
 	INT        = "INT"        //integers
 
 	//Operators
-	ASSIGN = "="
-	PLUS   = "+"
+	ASSIGN      = "="
+	PLUS        = "+"
+	MINUS       = "-"
+	DIVIDE      = "/"
+	MULTIPLY    = "*"
+	LESSTHAN    = "<"
+	GREATERTHAN = ">"
+	NOT         = "!"
 
 	//Delimiters
 	COMMA     = ","
