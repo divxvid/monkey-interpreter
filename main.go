@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"os"
+
+	"github.com/divxvid/monkey-interpreter/repl"
+)
 
 func main() {
-	fmt.Println("allo!")
+	repl.Start(os.Stdin, os.Stdout)
 }
