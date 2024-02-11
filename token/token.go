@@ -24,6 +24,8 @@ const (
 	LESSTHAN    = "<"
 	GREATERTHAN = ">"
 	NOT         = "!"
+	EQUAL       = "=="
+	NOT_EQUAL   = "!="
 
 	//Delimiters
 	COMMA     = ","

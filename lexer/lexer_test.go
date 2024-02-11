@@ -188,3 +188,37 @@ if (5 < 10) {
 		}
 	}
 }
+
+func TestNextTokenForDoubleCharacterOperators(t *testing.T) {
+	input := `
+2 == 2;
+2 != 3;
+    `
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.INT, "2"},
+		{token.EQUAL, "=="},
+		{token.INT, "2"},
+		{token.SEMICOLON, ";"},
+		{token.INT, "2"},
+		{token.NOT_EQUAL, "!="},
+		{token.INT, "3"},
+		{token.SEMICOLON, ";"},
+	}
+
+	l := New(input) //create a copy of the input string
+
+	for i, tt := range tests {
+		tok := l.NextToken()
+
+		if tok.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q", i, tt.expectedType, tok.Type)
+		}
+		if tok.Literal != tt.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q", i, tt.expectedLiteral, tok.Literal)
+		}
+	}
+}
