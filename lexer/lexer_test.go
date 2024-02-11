@@ -117,8 +117,8 @@ func TestNextTokenForArithmeticAndBooleanTokens(t *testing.T) {
 	}{
 		{token.NOT, "!"},
 		{token.MINUS, "-"},
-		{token.DIVIDE, "/"},
-		{token.MULTIPLY, "*"},
+		{token.SLASH, "/"},
+		{token.ASTERISK, "*"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
 		{token.INT, "5"},
