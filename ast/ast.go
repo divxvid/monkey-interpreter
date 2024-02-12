@@ -35,15 +35,15 @@ func (p *Program) TokenLiteral() string {
 
 // let statements are of type: let <identifier> = <expression>;
 type LetStatement struct {
-	token token.Token //this will store the token.LET token
-	Name  *Identifier
-	Value Expression
+	Token           token.Token //this will store the token.LET token
+	IdentifierName  *Identifier
+	ExpressionValue Expression
 }
 
 func (ls *LetStatement) statementNode() {}
 func (ls *LetStatement) TokenLiteral() string {
 	//returns back the LET token literal in string
-	return ls.token.Literal
+	return ls.Token.Literal
 }
 
 // Identifier struct is an expression because it generates a value when used anywhere
