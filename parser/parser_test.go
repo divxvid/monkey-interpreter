@@ -97,24 +97,43 @@ let 1337;
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil")
 	}
+
+	if len(p.Errors()) != 2 {
+		t.Fatalf("Did not get 2 errors. got %d instead.", len(p.Errors()))
+	}
+
+	for _, err := range p.Errors() {
+		t.Logf("Encountered Error: %s\n", err)
+	}
+}
+
+func TestReturnStatements(t *testing.T) {
+	input := `
+    return 10;
+    return 1337;
+`
+
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	if program == nil {
+		t.Fatal("Got nil from p.ParseProgram()")
+	}
 	checkParserErrors(t, p)
 
-	if len(program.Statements) != 3 {
-		t.Fatalf("program.Statements does not contain 3 statements. got=%d", len(program.Statements))
+	if len(program.Statements) != 2 {
+		t.Fatalf("program.Statements does not have 2 statements. got %d instead.", len(program.Statements))
 	}
 
-	tests := []struct {
-		expectedIdentifier string
-	}{
-		{"x"},
-		{"y"},
-		{"foo"},
-	}
+	for _, stmt := range program.Statements {
+		retStmt, ok := stmt.(*ast.ReturnStatement)
+		if !ok {
+			t.Fatalf("stmt is not of type *ast.ReturnStatement. got=%T instead", stmt)
+		}
 
-	for i, tt := range tests {
-		stmt := program.Statements[i]
-		if !testLetStatement(t, stmt, tt.expectedIdentifier) {
-			return
+		if retStmt.TokenLiteral() != "return" {
+			t.Fatalf("retStmt.TokenLiteral() is not 'return', got %q instead.", stmt.TokenLiteral())
 		}
 	}
 }

@@ -46,6 +46,17 @@ func (ls *LetStatement) TokenLiteral() string {
 	return ls.Token.Literal
 }
 
+type ReturnStatement struct {
+	Token       token.Token //this will store the token.RETURN token
+	ReturnValue Expression
+}
+
+func (rs *ReturnStatement) statementNode() {}
+func (rs *ReturnStatement) TokenLiteral() string {
+	//returns back the RETURN token literal in string
+	return rs.Token.Literal
+}
+
 // Identifier struct is an expression because it generates a value when used anywhere
 // other than assignment
 type Identifier struct {
