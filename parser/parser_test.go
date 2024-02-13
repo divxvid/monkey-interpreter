@@ -21,6 +21,7 @@ let foo = 1337;
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil")
 	}
+	checkParserErrors(t, p)
 
 	if len(program.Statements) != 3 {
 		t.Fatalf("program.Statements does not contain 3 statements. got=%d", len(program.Statements))
@@ -40,6 +41,21 @@ let foo = 1337;
 			return
 		}
 	}
+}
+
+func checkParserErrors(t *testing.T, p *Parser) {
+	errors := p.Errors()
+
+	if len(errors) == 0 {
+		return
+	}
+
+	t.Errorf("Parser had %d errors.", len(errors))
+	for _, msg := range errors {
+		t.Errorf("Parser Error: %q\n", msg)
+	}
+
+	t.FailNow()
 }
 
 func testLetStatement(t *testing.T, stmt ast.Statement, name string) bool {
@@ -65,4 +81,40 @@ func testLetStatement(t *testing.T, stmt ast.Statement, name string) bool {
 	}
 
 	return true
+}
+
+func TestLetStatementWithParsingError(t *testing.T) {
+	input := `
+let x = 5;
+let = 10;
+let 1337;
+`
+
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	if program == nil {
+		t.Fatalf("ParseProgram() returned nil")
+	}
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 3 {
+		t.Fatalf("program.Statements does not contain 3 statements. got=%d", len(program.Statements))
+	}
+
+	tests := []struct {
+		expectedIdentifier string
+	}{
+		{"x"},
+		{"y"},
+		{"foo"},
+	}
+
+	for i, tt := range tests {
+		stmt := program.Statements[i]
+		if !testLetStatement(t, stmt, tt.expectedIdentifier) {
+			return
+		}
+	}
 }
