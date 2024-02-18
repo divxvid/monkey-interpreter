@@ -20,6 +20,18 @@ const (
 	CALL        // func(X)
 )
 
+// higher number = processded first
+var precedences = map[token.TokenType]int{
+	token.EQUAL:       EQUALS,
+	token.NOT_EQUAL:   EQUALS,
+	token.LESSTHAN:    LESSGREATER,
+	token.GREATERTHAN: LESSGREATER,
+	token.PLUS:        SUM,
+	token.MINUS:       SUM,
+	token.SLASH:       PRODUCT,
+	token.ASTERISK:    PRODUCT,
+}
+
 type (
 	prefixParseFn func() ast.Expression
 	infixParseFn  func(ast.Expression) ast.Expression
@@ -228,4 +240,20 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 	expr.Right = p.parseExpression(PREFIX)
 
 	return expr
+}
+
+func (p *Parser) peekPrecedence() int {
+	if p, ok := precedences[p.peekToken.Type]; ok {
+		return p
+	}
+
+	return LOWEST
+}
+
+func (p *Parser) curPrecedence() int {
+	if p, ok := precedences[p.curToken.Type]; ok {
+		return p
+	}
+
+	return LOWEST
 }
