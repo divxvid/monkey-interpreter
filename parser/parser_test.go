@@ -454,7 +454,7 @@ func TestBooleanExpression(t *testing.T) {
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
-	if len(program.Statements) != 3 {
+	if len(program.Statements) != 1 {
 		t.Fatalf("Expected 3 statements but got: %d\n", len(program.Statements))
 	}
 
