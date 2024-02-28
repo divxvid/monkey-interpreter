@@ -62,6 +62,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
 	p.registerPrefix(token.TRUE, p.parseBooleanExpression)
 	p.registerPrefix(token.FALSE, p.parseBooleanExpression)
+	p.registerPrefix(token.FALSE, p.parseBooleanExpression)
+	p.registerPrefix(token.LPAREN, p.parseGroupedExpressions)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.PLUS, p.parseInfixExpression)
@@ -249,4 +251,19 @@ func (p *Parser) parseBooleanExpression() ast.Expression {
 
 	expr.Value = val
 	return expr
+}
+
+// Grouped expressions means the ones in brackets
+func (p *Parser) parseGroupedExpressions() ast.Expression {
+	p.nextToken() //consume the left parentheses
+
+	//consume whatever is inside the brackets
+	exp := p.parseExpression(LOWEST)
+
+	//match the right parentheses
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+
+	return exp
 }
