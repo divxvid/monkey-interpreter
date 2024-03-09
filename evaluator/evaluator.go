@@ -5,8 +5,9 @@ import (
 	"github.com/divxvid/monkey-interpreter/object"
 )
 
-// making package level singletons because all true and false are the same
+// making package level singletons because all true, false and nulls are the same
 var (
+	NULL  = &object.Null{}
 	TRUE  = &object.Boolean{Value: true}
 	FALSE = &object.Boolean{Value: false}
 )
