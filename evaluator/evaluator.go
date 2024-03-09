@@ -5,6 +5,12 @@ import (
 	"github.com/divxvid/monkey-interpreter/object"
 )
 
+// making package level singletons because all true and false are the same
+var (
+	TRUE  = &object.Boolean{Value: true}
+	FALSE = &object.Boolean{Value: false}
+)
+
 func Eval(node ast.Node) object.Object {
 	switch node := node.(type) {
 	//Statements
@@ -19,9 +25,7 @@ func Eval(node ast.Node) object.Object {
 			Value: node.Value,
 		}
 	case *ast.Boolean:
-		return &object.Boolean{
-			Value: node.Value,
-		}
+		return nativeToBooleanObj(node.Value)
 	}
 
 	return nil
@@ -35,4 +39,11 @@ func evalStatements(statements []ast.Statement) object.Object {
 	}
 
 	return result
+}
+
+func nativeToBooleanObj(input bool) *object.Boolean {
+	if input {
+		return TRUE
+	}
+	return FALSE
 }
