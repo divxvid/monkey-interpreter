@@ -21,6 +21,9 @@ func Eval(node ast.Node) object.Object {
 		return Eval(node.Expression)
 	case *ast.BlockStatement:
 		return evalStatements(node.Statements)
+	case *ast.ReturnStatement:
+		val := Eval(node.ReturnValue)
+		return &object.ReturnValue{Value: val}
 
 		//Expressions
 	case *ast.IntegerLiteral:
@@ -48,6 +51,13 @@ func evalStatements(statements []ast.Statement) object.Object {
 
 	for _, statement := range statements {
 		result = Eval(statement)
+
+		if returnValue, ok := result.(*object.ReturnValue); ok {
+			//if the result indeed is of type return Value
+			//this stops the execution of the statements after return
+			//and returns the return value
+			return returnValue.Value
+		}
 	}
 
 	return result
