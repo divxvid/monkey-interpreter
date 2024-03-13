@@ -92,6 +92,9 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.LESSTHAN, l.ch)
 	case '>':
 		tok = newToken(token.GREATERTHAN, l.ch)
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -141,6 +144,22 @@ func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
 	}
+}
+
+// TODO: implement error reporting in case of bad string
+// TODO: implement support for escape sequence chars
+func (l *Lexer) readString() string {
+	position := l.position + 1 //skip the "
+	for {
+		l.readChar()
+
+		if l.ch == '"' || l.ch == 0 {
+			//encounter the ending "
+			break
+		}
+	}
+
+	return l.input[position:l.position]
 }
 
 func isLetter(ch byte) bool {
